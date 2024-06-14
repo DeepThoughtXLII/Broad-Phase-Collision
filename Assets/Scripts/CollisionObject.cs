@@ -50,7 +50,7 @@ public class CollisionObject : MonoBehaviour
     }
 
 
-    #region getters
+    #region getters / setters
 
     public float GetRadius()
     {

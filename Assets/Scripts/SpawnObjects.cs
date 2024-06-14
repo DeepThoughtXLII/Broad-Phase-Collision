@@ -28,18 +28,19 @@ public class SpawnObjects : MonoBehaviour
         if(manualObject != null) { myObjects.Add(manualObject); }
     }
 
+
+    //calling physics updates for all objects
     private void FixedUpdate()
     {
-        
         foreach (CollisionObject obj in myObjects)
         {
             obj.Step(Time.fixedDeltaTime);
         }
         myCollisionStrategy.CheckCollision(myObjects, borders);
-
-        
     }
 
+
+    //defining the box around the collision objects
     private void GetBounds()
     {
         Camera cam = Camera.main;
@@ -62,6 +63,9 @@ public class SpawnObjects : MonoBehaviour
         borders.Add(new Line(point3, point4));
         borders.Add(new Line(point4, point1));
     }
+
+
+    //Spawning all the Objects inside the box
     private void SpawnObjectsInBounds()
     {
         for(int i = 0; i < objectAmount; i++)
@@ -72,6 +76,9 @@ public class SpawnObjects : MonoBehaviour
         }
     }
 
+
+
+    //Spawning objects in small instances in a grid
     private Vector3 GetPosOnExactGrid()
     {
         Vector3 pos = new Vector3();
@@ -96,6 +103,8 @@ public class SpawnObjects : MonoBehaviour
         return pos;
     }
 
+
+    //calculating a close to optimal grid inside the box
     Vector2Int CalculateOptimalGrid(int totalObjects, float boxWidth, float boxHeight)
     {
         // Calculate the approximate number of columns based on the box aspect ratio
@@ -119,6 +128,8 @@ public class SpawnObjects : MonoBehaviour
         return new Vector2Int(columns, rows);
     }
 
+
+    //calculating the spawn positions of the objects so everything is spawned as evenly distrubted in side the box as possible
     private Vector3 GetPosOnEvenGrid()
     {
         Vector3 pos = new Vector3();
@@ -148,6 +159,8 @@ public class SpawnObjects : MonoBehaviour
         return pos;
     }
 
+
+    //gizmos
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
@@ -175,6 +188,8 @@ public class SpawnObjects : MonoBehaviour
 }
 
 
+
+//easier to save lines for the box
 public struct Line
 {
     public Vector2 start;
