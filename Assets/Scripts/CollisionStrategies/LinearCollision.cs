@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Collision")]
+[CreateAssetMenu(menuName = "Collision/Linear")]
 
 public class LinearCollision : CollisionStrategy
 {
@@ -26,6 +26,8 @@ public class LinearCollision : CollisionStrategy
     }
 
 
+
+
     //check for possible collision and save in a queue to resolve
     private void CheckBallBorderCollisions(List<CollisionObject> objects)
     {
@@ -42,7 +44,7 @@ public class LinearCollision : CollisionStrategy
                 CollisionObject A = objects[i];
                 CollisionObject B = objects[j];
 
-                if (base.CircleCircleCollision(A.GetRadius(), A.GetPosition(), B.GetRadius(), B.GetPosition()))
+                if (base.CircleCircleCollision(A.GetRadius(), A.GetNewPos(), B.GetRadius(), B.GetNewPos()))
                 {
                     collisionQueue.Enqueue(new CollisionPair(A, B));
                 }
@@ -63,7 +65,9 @@ public class LinearCollision : CollisionStrategy
         while (collisionQueue.Count > 0)
         {
             CollisionPair collision = collisionQueue.Dequeue();
+           
             CircleCircleResolve(collision);
+            
         }
 
         if (tempObjects.Count > 0)

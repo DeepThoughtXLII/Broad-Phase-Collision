@@ -3,8 +3,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class CollisionObject : MonoBehaviour
+public class CollisionObject : MonoBehaviour, ICollisionInstance
 {
+    [HideInInspector] public ObjectType ObjectType { get{ return type; } }
+    [SerializeField] private ObjectType type;
 
     private SpriteRenderer myRend;
     [SerializeField] private Color defaultColor;
@@ -16,10 +18,12 @@ public class CollisionObject : MonoBehaviour
     bool fading = false;
 
     Vector3 newPosition = Vector3.zero;
+    float radius;
 
     [SerializeField] private Vector3 direction;
     [SerializeField] private Vector3 velocity;
     [SerializeField] private float speed = 1;
+
 
     private void Awake()
     {
@@ -30,6 +34,7 @@ public class CollisionObject : MonoBehaviour
         velocity = direction * speed;
 
         newPosition = transform.position;
+        radius = GetRadius();
     }
 
     public void Step(float time)
@@ -57,9 +62,19 @@ public class CollisionObject : MonoBehaviour
         return transform.localScale.x / 2;
     }
 
-    public Vector2 GetPosition()
+    public Vector2 GetCurrentPos()
+    {
+        return transform.position;
+    }
+
+    public Vector2 GetNewPos()
     {
         return new Vector2(newPosition.x, newPosition.y);
+    }
+
+    public AABB GetBoundingBoxAtPos(Vector3 position)
+    {
+        return new AABB(position, radius);
     }
 
     public void SetNewPosition(Vector2 newPosition)
@@ -114,6 +129,27 @@ public class CollisionObject : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        //Gizmos.DrawLine(transform.position, transform.position + velocity);
+        Gizmos.DrawLine(transform.position, transform.position + velocity);
     }
 }
+
+
+public struct AABB
+{
+    public Vector2 min;
+    public Vector2 max;
+
+    public AABB(Vector3 pos, float radius)
+    {
+        min = new Vector2(pos.x - radius, pos.y - radius);
+        max = new Vector2(pos.x + radius, pos.y + radius);
+    }
+}
+
+public interface ICollisionInstance
+{
+    public ObjectType ObjectType { get; }
+
+}
+
+public enum ObjectType { CIRCLE, LINE }

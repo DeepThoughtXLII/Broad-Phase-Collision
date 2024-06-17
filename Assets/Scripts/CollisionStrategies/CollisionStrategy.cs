@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
@@ -6,13 +7,13 @@ using UnityEngine.UIElements;
 
 public abstract class CollisionStrategy : ScriptableObject
 {
-    
+
     //override this for different broad phase collision
-    public virtual void CheckCollision(List<CollisionObject> objects, List<Line> borders)
-    {
+    public abstract void CheckCollision(List<CollisionObject> objects, List<Line> borders);
 
-    }
+    public virtual void DebugDraw(List<Line> borders) { }
 
+    public virtual void ClearCollisionStructure() { }
 
     #region circle circle collision
     //returns true if two balls collide + false if they do not
@@ -39,10 +40,10 @@ public abstract class CollisionStrategy : ScriptableObject
     //Resets the position of a circle circle collision pair and reflects their directions
     public void CircleCircleResolve(CollisionPair collision)
     {
-        Vector2 newPosition = GetNewCirclePosition(collision.objectA.GetRadius(), collision.objectA.GetPosition(), collision.objectB.GetRadius(), collision.objectB.GetPosition());
+        Vector2 newPosition = GetNewCirclePosition(collision.objectA.GetRadius(), collision.objectA.GetNewPos(), collision.objectB.GetRadius(), collision.objectB.GetNewPos());
         collision.objectA.SetNewPosition(newPosition);
 
-        Vector2 lineVector = collision.objectA.GetPosition() - collision.objectB.GetPosition();
+        Vector2 lineVector = collision.objectA.GetNewPos() - collision.objectB.GetNewPos();
         collision.objectA.ReflectDirection(-lineVector.normalized);
     }
 
@@ -55,12 +56,17 @@ public abstract class CollisionStrategy : ScriptableObject
     {
         foreach (Line border in borders)
         {
-            if (ballDistance(obj.GetPosition(), border) < obj.GetRadius())
-            {
-                obj.SetNewPosition(POI(obj.GetPosition(), obj.GetVelocity(), obj.GetRadius(), border));
+            CircleLineCollision(border, obj);
+        }
+    }
 
-                obj.ReflectDirection(Vector2.Perpendicular(border.lineVector).normalized);
-            }
+    public void CircleLineCollision(Line line, CollisionObject obj)
+    {
+        if (ballDistance(obj.GetNewPos(), line) < obj.GetRadius())
+        {
+            obj.SetNewPosition(POI(obj.GetNewPos(), obj.GetVelocity(), obj.GetRadius(), line));
+
+            obj.ReflectDirection(Vector2.Perpendicular(line.lineVector).normalized);
         }
     }
 
@@ -101,10 +107,32 @@ public class CollisionPair
     public CollisionObject objectA;
     public CollisionObject objectB;
 
-
     public CollisionPair(CollisionObject objectA, CollisionObject objectB)
     {
         this.objectA = objectA;
         this.objectB = objectB;
     }
+
+    // Override Equals to handle reverse values
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        var other = (CollisionPair)obj;
+        return (objectA == other.objectA && objectB == other.objectA) ||
+               (objectA == other.objectB && objectB == other.objectB);
+    }
+
+    // Override GetHashCode to handle reverse values
+    public override int GetHashCode()
+    {
+        // Create a combined hash code that is the same for reversed values
+        int hash1 = objectA.GetHashCode() ^ objectB.GetHashCode();
+        int hash2 = objectB.GetHashCode() ^ objectA.GetHashCode();
+        return hash1 ^ hash2; // XOR the two hashes
+    }
+
 }

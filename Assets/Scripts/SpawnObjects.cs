@@ -20,23 +20,47 @@ public class SpawnObjects : MonoBehaviour
 
     [SerializeField] private CollisionObject manualObject;
 
+    [SerializeField] private bool simulationRunning = false;
+
 
     private void Start()
     {
         GetBounds();
         SpawnObjectsInBounds();
         if(manualObject != null) { myObjects.Add(manualObject); }
+        myCollisionStrategy.ClearCollisionStructure();
     }
 
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Debug.Log("Step");
+            foreach (CollisionObject obj in myObjects)
+            {
+                obj.Step(1);
+            }
+            myCollisionStrategy.CheckCollision(myObjects, borders);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            simulationRunning = !simulationRunning;
+        }
+
+    }
 
     //calling physics updates for all objects
     private void FixedUpdate()
     {
-        foreach (CollisionObject obj in myObjects)
+        if (simulationRunning)
         {
-            obj.Step(Time.fixedDeltaTime);
+            foreach (CollisionObject obj in myObjects)
+            {
+                obj.Step(Time.fixedDeltaTime);
+            }
+            myCollisionStrategy.CheckCollision(myObjects, borders);
         }
-        myCollisionStrategy.CheckCollision(myObjects, borders);
     }
 
 
@@ -144,7 +168,7 @@ public class SpawnObjects : MonoBehaviour
         float rowSpace = availableHeight / grid.y;
         float columnSpace = availableWidth / grid.x;    
 
-        Debug.Log("row: " + grid.x + " and column: " + grid.y);
+       // Debug.Log("row: " + grid.x + " and column: " + grid.y);
         int index = myObjects.Count;
 
         Vector2 upperLCorner = new Vector2(xBounds.x, yBounds.y);
@@ -163,6 +187,8 @@ public class SpawnObjects : MonoBehaviour
     //gizmos
     private void OnDrawGizmos()
     {
+        myCollisionStrategy.DebugDraw(borders);
+
         Gizmos.color = Color.green;
 
         if(borders.Count <= 0) { GetBounds(); }
@@ -190,16 +216,21 @@ public class SpawnObjects : MonoBehaviour
 
 
 //easier to save lines for the box
-public struct Line
+public class Line : ICollisionInstance
 {
+   public ObjectType ObjectType { get { return type; } }
+   private ObjectType type = ObjectType.LINE;
+
     public Vector2 start;
     public Vector2 end;
     public Vector2 lineVector;
+    public float length;
 
     public Line(Vector2 start, Vector2 end)
     {
         this.start = start;
         this.end = end;
+        length = (end - start).magnitude;
         lineVector = (end - start).normalized;
     }
 }

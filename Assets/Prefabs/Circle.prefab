@@ -101,4 +101,4 @@ MonoBehaviour:
   collisionColor: {r: 0.764151, g: 0.28475437, b: 0.29928267, a: 1}
   direction: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
-  speed: 3
+  speed: 1
