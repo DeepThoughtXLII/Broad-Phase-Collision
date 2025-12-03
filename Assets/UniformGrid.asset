@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3368246122d0ac04cb12b73d9cb62d8a, type: 3}
   m_Name: UniformGrid
   m_EditorClassIdentifier: 
-  gridSize: 0.3
+  gridSize: 1

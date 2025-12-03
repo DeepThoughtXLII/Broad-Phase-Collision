@@ -44,6 +44,8 @@ public class UniformGrid : CollisionStrategy
 
         CheckBallBorderCollisions();
 
+        Debug.Log("collisions checked: " + checkedCollisions.Count); 
+
        // Debug.Log("dictionairy count: " + myGrid.GetGrid().Count);
     }
 
@@ -242,7 +244,8 @@ public class UniformGrid : CollisionStrategy
                 if (i == j) { continue; }
                 CollisionObject A = objects[i];
                 CollisionObject B = objects[j];
-                if (HasPairBeenChecked(A, B)) { Debug.LogWarning("rejected"); continue; }
+                CollisionPair pair = new CollisionPair(A, B);
+                if (HasPairBeenChecked(pair)) { Debug.LogWarning("rejected"); continue; }
                 if (CircleCircleCollision(A.GetRadius(), A.GetNewPos(), B.GetRadius(), B.GetNewPos()))
                 {
                     collisionQueue.Enqueue(new CollisionPair(A, B));
@@ -252,10 +255,11 @@ public class UniformGrid : CollisionStrategy
         }
     }
 
-    private bool HasPairBeenChecked(CollisionObject A, CollisionObject B)
+    private bool HasPairBeenChecked(CollisionPair pair)
     {
-        if (checkedCollisionpairs.ContainsKey(new CollisionPair(A, B)))
+        if (checkedCollisionpairs.ContainsKey(pair))
         {
+            Debug.LogWarning("actually checking it only once :)");
             return true;
         }
         return false;

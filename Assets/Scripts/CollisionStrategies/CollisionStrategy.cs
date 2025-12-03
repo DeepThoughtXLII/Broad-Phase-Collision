@@ -113,7 +113,7 @@ public class CollisionPair
         this.objectB = objectB;
     }
 
-    // Override Equals to handle reverse values
+     //Override Equals to handle reverse values
     public override bool Equals(object obj)
     {
         if (obj == null || GetType() != obj.GetType())

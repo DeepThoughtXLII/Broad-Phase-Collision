@@ -97,8 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5af6f363749fb34986bf0dbda724bee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   defaultColor: {r: 0.34509802, g: 0.7529412, b: 0.4331001, a: 1}
   collisionColor: {r: 0.764151, g: 0.28475437, b: 0.29928267, a: 1}
   direction: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
-  speed: 1
+  speed: 3.25
