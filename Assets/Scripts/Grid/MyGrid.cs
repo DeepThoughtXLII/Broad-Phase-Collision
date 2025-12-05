@@ -209,6 +209,7 @@ namespace UnityEngine
 
         #endregion
 
+
         public void DrawGrid()
         {
             foreach (Vector2Int index in grid.Keys)
@@ -219,7 +220,10 @@ namespace UnityEngine
                 Gizmos.DrawLine(new Vector3(pos.x, pos.y + _cellSize, pos.z), new Vector3(pos.x + _cellSize, pos.y + _cellSize, pos.z));
                 Gizmos.DrawLine(new Vector3(pos.x + _cellSize, pos.y + _cellSize, pos.z), new Vector3(pos.x + _cellSize, pos.y, pos.z));
                 Gizmos.DrawLine(new Vector3(pos.x + _cellSize, pos.y, pos.z), pos);
+#if UNITY_EDITOR
+
                 Handles.Label(new Vector3(pos.x, pos.y + _cellSize / 4 * 3, 0), grid[index].ToString());
+                #endif
             }
             //if (grid.Length > 0)
             //{
@@ -239,6 +243,7 @@ namespace UnityEngine
         }
 
     }
+
 }
 
 public enum GridType { RECTANGULAR, ISOMETRIC };

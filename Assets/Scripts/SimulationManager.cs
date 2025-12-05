@@ -15,6 +15,9 @@ public class SimulationManager : MonoBehaviour
     [SerializeField] Button StartSimulation;
     [SerializeField] TMP_InputField TimeInSeconds;
 
+    [SerializeField] GameObject Simulation;
+    [SerializeField] GameObject simSelectUI;
+
     private float simulationTime;
     private float currentSimulationTime;
     private bool simRunning = false;
@@ -32,6 +35,8 @@ public class SimulationManager : MonoBehaviour
         currentSimulationTime = 0;
         OnSimulationStart?.Invoke();
         simRunning = true;
+        Simulation.SetActive(true);
+        simSelectUI.SetActive(false);
     }
 
     private void Update()
@@ -50,6 +55,6 @@ public class SimulationManager : MonoBehaviour
     private void SimulationEnd()
     {
         OnSimulationStop?.Invoke();
-
+        Simulation.SetActive(false);
     }
 }

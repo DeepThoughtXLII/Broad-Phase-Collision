@@ -44,7 +44,7 @@ public class UniformGrid : CollisionStrategy
 
         CheckBallBorderCollisions();
 
-        Debug.Log("collisions checked: " + checkedCollisions.Count); 
+        //Debug.Log("collisions checked: " + checkedCollisions.Count); 
 
        // Debug.Log("dictionairy count: " + myGrid.GetGrid().Count);
     }
@@ -127,13 +127,13 @@ public class UniformGrid : CollisionStrategy
 
             int length = (int)(end - start).magnitude + 1;
 
-            Debug.Log("line length: " + length);
+            //Debug.Log("line length: " + length);
 
             Vector2Int direction = new Vector2Int(
          (end.x - start.x) != 0 ? (end.x - start.x) / Mathf.Abs(end.x - start.x) : 0,
          (end.y - start.y) != 0 ? (end.y - start.y) / Mathf.Abs(end.y - start.y) : 0
      );
-            Debug.Log(direction);
+            //Debug.Log(direction);
 
             Vector2Int[] coveredCells = new Vector2Int[length];
             for (int i = 0; i < length; i++)
@@ -287,7 +287,7 @@ public class UniformGrid : CollisionStrategy
     //resolve collisions
     private void ResolveCollisions()
     {
-        Debug.Log("collisionCount" +  collisionQueue.Count);
+        //Debug.Log("collisionCount" +  collisionQueue.Count);
         while (collisionQueue.Count > 0)
         {
             CollisionPair collision = collisionQueue.Dequeue();
@@ -314,7 +314,9 @@ public class UniformGrid : CollisionStrategy
                 Gizmos.DrawLine(new Vector3(pos.x, pos.y + _cellSize, pos.z), new Vector3(pos.x + _cellSize, pos.y + _cellSize, pos.z));
                 Gizmos.DrawLine(new Vector3(pos.x + _cellSize, pos.y + _cellSize, pos.z), new Vector3(pos.x + _cellSize, pos.y, pos.z));
                 Gizmos.DrawLine(new Vector3(pos.x + _cellSize, pos.y, pos.z), pos);
+#if UNITY_EDITOR
                 Handles.Label(new Vector3(pos.x + _cellSize / 2, pos.y + _cellSize / 2, 0), grid[index].Count.ToString());
+#endif
             }
         }
 
@@ -332,7 +334,9 @@ public class UniformGrid : CollisionStrategy
                 Gizmos.DrawLine(new Vector3(pos.x, pos.y + _cellSize, pos.z), new Vector3(pos.x + _cellSize, pos.y + _cellSize, pos.z));
                 Gizmos.DrawLine(new Vector3(pos.x + _cellSize, pos.y + _cellSize, pos.z), new Vector3(pos.x + _cellSize, pos.y, pos.z));
                 Gizmos.DrawLine(new Vector3(pos.x + _cellSize, pos.y, pos.z), pos);
+#if UNITY_EDITOR
                 Handles.Label(new Vector3(pos.x + _cellSize / 2, pos.y + _cellSize / 2, 0), grid[index].Count.ToString());
+#endif
             }
         }
 

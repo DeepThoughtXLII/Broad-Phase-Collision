@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 20.75
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -469,7 +469,7 @@ MonoBehaviour:
   Frame: 1
   myCollisionStrategy: {fileID: 11400000, guid: 08c94d9ed673fbf46ab3fc19bf810966, type: 2}
   manualObject: {fileID: 0}
-  simulationRunning: 0
+  simulationRunning: 1
 --- !u!4 &503183029
 Transform:
   m_ObjectHideFlags: 0
@@ -606,8 +606,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -42, y: 63}
-  m_SizeDelta: {x: 650.1734, y: 83.8854}
+  m_AnchoredPosition: {x: 5, y: 34}
+  m_SizeDelta: {x: 304.7546, y: 36.1983}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &542420977
 MonoBehaviour:
@@ -970,8 +970,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -42.00244, y: 163.66248}
-  m_SizeDelta: {x: 650.1734, y: 83.8854}
+  m_AnchoredPosition: {x: 4.9988556, y: 77.43799}
+  m_SizeDelta: {x: 304.7546, y: 36.1983}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1098928693
 MonoBehaviour:
@@ -1194,7 +1194,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 32.4
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1484,8 +1484,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -42.00354, y: -37.662476}
-  m_SizeDelta: {x: 650.1665, y: 83.8854}
+  m_AnchoredPosition: {x: 4.9983215, y: -9.438015}
+  m_SizeDelta: {x: 304.7513, y: 36.1983}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1575442308
 MonoBehaviour:
@@ -1675,7 +1675,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 20.75
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1770,7 +1770,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartSimulation: {fileID: 1575442308}
-  TimeInSeconds: {fileID: 0}
+  TimeInSeconds: {fileID: 542420977}
+  Simulation: {fileID: 503183027}
+  simSelectUI: {fileID: 172181034}
 --- !u!4 &1785611824
 Transform:
   m_ObjectHideFlags: 0
