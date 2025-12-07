@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SpawnObjects : MonoBehaviour
 {
-    [SerializeField] private int objectAmount = 10;
+    [SerializeField] public int objectAmount = 10;
     [SerializeField] private GameObject objectPrefab;
 
     private Vector2 xBounds;
@@ -15,22 +15,39 @@ public class SpawnObjects : MonoBehaviour
     List<CollisionObject> myObjects = new List<CollisionObject>();
     List<Line> borders = new List<Line>();
 
-    [SerializeField] private CollisionStrategy myCollisionStrategy;
+    [SerializeField] public CollisionStrategy myCollisionStrategy;
+
+    public List<int> collisionCheckAmounts = new List<int>(50000);
 
 
     [SerializeField] private CollisionObject manualObject;
 
     [SerializeField] private bool simulationRunning = false;
 
+    [SerializeField] private bool showBorderGizmos = false;
+
 
     private void Start()
     {
-        GetBounds();
-        SpawnObjectsInBounds();
-        if(manualObject != null) { myObjects.Add(manualObject); }
-        myCollisionStrategy.ClearCollisionStructure();
+        simulationRunning = false;
+        SimulationManager.Instance.OnSimulationStart += StartSimulation;
     }
 
+    private void OnDisable()
+    {
+        SimulationManager.Instance.OnSimulationStart -= StartSimulation;
+
+    }
+
+    private void StartSimulation(SimData data)
+    {
+        collisionCheckAmounts.Clear();
+        GetBounds();
+        SpawnObjectsInBounds();
+        if (manualObject != null) { myObjects.Add(manualObject); }
+        myCollisionStrategy.ClearCollisionStructure();
+        simulationRunning = true;
+    }
 
     private void Update()
     {
@@ -47,19 +64,15 @@ public class SpawnObjects : MonoBehaviour
         {
             simulationRunning = !simulationRunning;
         }
-
-    }
-
-    //calling physics updates for all objects
-    private void FixedUpdate()
-    {
         if (simulationRunning)
         {
+            Debug.LogWarning("update");
             foreach (CollisionObject obj in myObjects)
             {
-                obj.Step(Time.fixedDeltaTime);
+                obj.Step(Time.deltaTime);
             }
             myCollisionStrategy.CheckCollision(myObjects, borders);
+            collisionCheckAmounts.Add(myCollisionStrategy.CollisionChecksThisFrame);
         }
     }
 
@@ -76,10 +89,10 @@ public class SpawnObjects : MonoBehaviour
         yBounds.x = cam.transform.position.y - camHeight / 2 + Frame;
         yBounds.y = cam.transform.position.y + camHeight / 2 - Frame;
 
-        Vector2 point1 = new Vector2(xBounds.x, yBounds.x);
-        Vector2 point2 = new Vector2(xBounds.y, yBounds.x);
-        Vector2 point3 = new Vector2(xBounds.y, yBounds.y);
-        Vector2 point4 = new Vector2(xBounds.x, yBounds.y);
+        Vector2 point1 = new Vector2(xBounds.x, yBounds.x); //0,0
+        Vector2 point2 = new Vector2(xBounds.y, yBounds.x); //1,0
+        Vector2 point3 = new Vector2(xBounds.y, yBounds.y); //1,1
+        Vector2 point4 = new Vector2(xBounds.x, yBounds.y); //0,1
 
 
         borders.Add(new Line(point1, point2));
@@ -189,24 +202,26 @@ public class SpawnObjects : MonoBehaviour
     {
         myCollisionStrategy.DebugDraw(borders);
 
-        Gizmos.color = Color.green;
-
-        if(borders.Count <= 0) { GetBounds(); }
-
-        for(int i = 0; i < borders.Count; i++)
+        if (showBorderGizmos)
         {
-            Gizmos.DrawLine(borders[i].start, borders[i].end);
+            Gizmos.color = Color.green;
+
+            if (borders.Count <= 0) { GetBounds(); }
+
+            for (int i = 0; i < borders.Count; i++)
+            {
+                Gizmos.DrawLine(borders[i].start, borders[i].end);
+            }
+
+            Gizmos.color = Color.red;
+
+            foreach (Line border in borders)
+            {
+                var length = (border.end - border.start).magnitude;
+                var start = border.start + length / 2 * border.lineVector;
+                Gizmos.DrawLine(start, start + Vector2.Perpendicular(border.lineVector).normalized);
+            }
         }
-
-        Gizmos.color = Color.red;
-
-        foreach(Line border in borders)
-        {
-            var length = (border.end - border.start).magnitude;
-            var start = border.start + length / 2 * border.lineVector;
-            Gizmos.DrawLine(start, start + Vector2.Perpendicular(border.lineVector).normalized);
-        }
-
         Gizmos.color = Color.white;
     }
 

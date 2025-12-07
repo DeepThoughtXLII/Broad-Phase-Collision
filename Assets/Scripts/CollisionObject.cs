@@ -30,7 +30,7 @@ public class CollisionObject : MonoBehaviour, ICollisionInstance
         myRend = GetComponent<SpriteRenderer>();
         myRend.color = defaultColor;
 
-        direction = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0).normalized;
+        direction = new Vector3(SimulationManager.Instance.GetRandom(-1f, 1f), SimulationManager.Instance.GetRandom(-1f, 1f), 0).normalized;
         velocity = direction * speed;
 
         newPosition = transform.position;
@@ -129,7 +129,7 @@ public class CollisionObject : MonoBehaviour, ICollisionInstance
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawLine(transform.position, transform.position + velocity);
+        //Gizmos.DrawLine(transform.position, transform.position + velocity);
     }
 }
 

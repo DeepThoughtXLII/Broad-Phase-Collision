@@ -8,6 +8,8 @@ using UnityEngine.UIElements;
 public abstract class CollisionStrategy : ScriptableObject
 {
 
+    public int CollisionChecksThisFrame;   
+
     //override this for different broad phase collision
     public abstract void CheckCollision(List<CollisionObject> objects, List<Line> borders);
 

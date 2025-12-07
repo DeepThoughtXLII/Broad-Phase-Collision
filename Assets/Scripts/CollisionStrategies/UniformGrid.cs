@@ -32,7 +32,9 @@ public class UniformGrid : CollisionStrategy
         collisionQueue.Clear();
         checkedCollisions.Clear();
         checkedCollisionpairs.Clear();
+        CollisionChecksThisFrame = 0;
 
+        //if static grid doesn't exist yet, generate static grid
         if (myStaticGrid == null)
         {
             lineGridSize = gridSize * 3;
@@ -42,7 +44,9 @@ public class UniformGrid : CollisionStrategy
 
         FillDynamicGrid(objects);
 
-        CheckBallBorderCollisions();
+        ComputeCollisionsPerCell();
+
+        CollisionChecksThisFrame = checkedCollisionpairs.Count + checkedCollisions.Count;
 
         //Debug.Log("collisions checked: " + checkedCollisions.Count); 
 
@@ -51,6 +55,7 @@ public class UniformGrid : CollisionStrategy
 
     private void FillDynamicGrid(List<CollisionObject> objects)
     {
+        //if grid doesn't exits, generate grid
         if (myGrid == null)
         {
             myGrid = new MyGrid<List<CollisionObject>>(GridType.RECTANGULAR, gridSize);
@@ -64,6 +69,7 @@ public class UniformGrid : CollisionStrategy
                 }
             }
         }
+        //otherwise update objects inside grid
         foreach (CollisionObject obj in objects)
         {
             UpdatePositionOnGrid(obj);
@@ -125,14 +131,21 @@ public class UniformGrid : CollisionStrategy
             Vector2Int start = myStaticGrid.GetXY(line.start);
             Vector2Int end = myStaticGrid.GetXY(line.end);
 
+            //make line longer to include end and start cells
             int length = (int)(end - start).magnitude + 1;
 
             //Debug.Log("line length: " + length);
+            int dirX;
+            int dirY;
 
-            Vector2Int direction = new Vector2Int(
-         (end.x - start.x) != 0 ? (end.x - start.x) / Mathf.Abs(end.x - start.x) : 0,
-         (end.y - start.y) != 0 ? (end.y - start.y) / Mathf.Abs(end.y - start.y) : 0
-     );
+            if (end.x < start.x) { dirX = -1; } else if(start.x < end.x){ dirX = 1; } else { dirX = 0; }
+            if (end.y < start.y) { dirY = -1; } else if (start.y < end.y) { dirY = 1; } else { dirY = 0; }
+
+            Vector2Int direction = new Vector2Int(dirX, dirY);
+         //   Vector2Int direction = new Vector2Int(
+         //    (end.x - start.x) != 0 ? (end.x - start.x) / Mathf.Abs(end.x - start.x) : 0,
+         //    (end.y - start.y) != 0 ? (end.y - start.y) / Mathf.Abs(end.y - start.y) : 0
+         //);
             //Debug.Log(direction);
 
             Vector2Int[] coveredCells = new Vector2Int[length];
@@ -202,14 +215,14 @@ public class UniformGrid : CollisionStrategy
 
 
     //check for possible collision and save in a queue to resolve
-    private void CheckBallBorderCollisions()
+    private void ComputeCollisionsPerCell()
     {
         collisionQueue.Clear();
         foreach (KeyValuePair<Vector2Int, List<CollisionObject>> keyValuePair in myGrid.GetGrid())
         {
             Vector3 cellWorldPosition = myGrid.GetWorldPosition(keyValuePair.Key);
             bool hasStaticObjects = myStaticGrid.Contains(myStaticGrid.GetXY(cellWorldPosition));
-            if (hasStaticObjects)
+            if (hasStaticObjects) //static grid collisions
             {
                 foreach (CollisionObject obj in keyValuePair.Value)
                 {
@@ -220,10 +233,11 @@ public class UniformGrid : CollisionStrategy
                         {
                             checkedCollisions.Add(new KeyValuePair<Line, CollisionObject>(line, obj), true);
                             CircleLineCollision(line, obj);
+                            CollisionChecksThisFrame++;
                         }
                     }
                 }
-            }
+            }// dynamic grid collisions
             if (keyValuePair.Value.Count > 1)
             {
                 CheckCollisionsInCell(keyValuePair.Value);

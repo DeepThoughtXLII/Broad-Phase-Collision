@@ -15,35 +15,33 @@ public class LinearCollision : CollisionStrategy
     List<CollisionObject> tempObjects = new List<CollisionObject>();
 
 
-
     public override void CheckCollision(List<CollisionObject> objects, List<Line> borders)
     {
         Debug.Log("new collision check started.");
         collisionQueue.Clear();
         tempObjects.Clear();
+        CollisionChecksThisFrame = 0;
         this.borders = borders;
         CheckBallBorderCollisions(objects);
     }
 
 
-
-
     //check for possible collision and save in a queue to resolve
     private void CheckBallBorderCollisions(List<CollisionObject> objects)
     {
-        int collisionChecks = objects.Count * objects.Count;
         collisionQueue.Clear();
 
         for (int i = 0; i < objects.Count; ++i)
         {
             base.borderCollision(borders, objects[i]);
+            CollisionChecksThisFrame += borders.Count;
 
             for (int j = 0; j < objects.Count; ++j)
             {
                 if (i == j) { continue; }
                 CollisionObject A = objects[i];
                 CollisionObject B = objects[j];
-
+                CollisionChecksThisFrame++;
                 if (base.CircleCircleCollision(A.GetRadius(), A.GetNewPos(), B.GetRadius(), B.GetNewPos()))
                 {
                     collisionQueue.Enqueue(new CollisionPair(A, B));
