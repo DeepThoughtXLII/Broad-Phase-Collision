@@ -34,7 +34,7 @@ public class LinearCollision : CollisionStrategy
         for (int i = 0; i < objects.Count; ++i)
         {
             base.borderCollision(borders, objects[i]);
-            CollisionChecksThisFrame += borders.Count;
+           // CollisionChecksThisFrame += borders.Count;
 
             for (int j = 0; j < objects.Count; ++j)
             {

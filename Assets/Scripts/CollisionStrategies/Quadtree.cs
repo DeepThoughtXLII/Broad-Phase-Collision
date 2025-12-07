@@ -19,13 +19,11 @@ public class Quadtree : CollisionStrategy
 
 
     Queue<CollisionPair> collisionQueue = new Queue<CollisionPair>();
-    Dictionary<KeyValuePair<Line, CollisionObject>, bool> checkedCollisions = new Dictionary<KeyValuePair<Line, CollisionObject>, bool>();
     Dictionary<CollisionPair, bool> checkedCollisionpairs = new Dictionary<CollisionPair, bool>();
 
     public override void CheckCollision(List<CollisionObject> objects, List<Line> borders)
     {
         collisionQueue.Clear();
-        checkedCollisions.Clear();
         checkedCollisionpairs.Clear();
         CollisionChecksThisFrame = 0;
 
@@ -84,6 +82,7 @@ public class Quadtree : CollisionStrategy
                 CollisionObject B = objects[j];
                 CollisionPair pair = new CollisionPair(A, B);
                 if (HasPairBeenChecked(pair)) { Debug.LogWarning("rejected"); continue; }
+                CollisionChecksThisFrame++;
                 if (CircleCircleCollision(A.GetRadius(), A.GetNewPos(), B.GetRadius(), B.GetNewPos()))
                 {
                     collisionQueue.Enqueue(new CollisionPair(A, B));
@@ -121,7 +120,7 @@ public class Quadtree : CollisionStrategy
         for (int i = 0; i < objects.Count; ++i)
         {
             base.borderCollision(borders, objects[i]);
-            CollisionChecksThisFrame += borders.Count;
+            //CollisionChecksThisFrame += borders.Count;
         }
     }
 

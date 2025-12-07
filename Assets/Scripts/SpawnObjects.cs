@@ -19,6 +19,7 @@ public class SpawnObjects : MonoBehaviour
 
     public List<int> collisionCheckAmounts = new List<int>(50000);
 
+    [SerializeField] private Vector2 sizeRange;
 
     [SerializeField] private CollisionObject manualObject;
 
@@ -108,7 +109,11 @@ public class SpawnObjects : MonoBehaviour
         for(int i = 0; i < objectAmount; i++)
         {
             Vector3 newPos = GetPosOnEvenGrid();
-            CollisionObject newObject = Instantiate(objectPrefab, newPos, Quaternion.identity, transform).GetComponent<CollisionObject>();
+            GameObject newObj = Instantiate(objectPrefab, newPos, Quaternion.identity, transform);
+
+            float scale = SimulationManager.Instance.GetRandom(sizeRange.x, sizeRange.y);
+            newObj.transform.localScale = new Vector3(scale, scale, 1);
+            CollisionObject newObject = newObj.GetComponent<CollisionObject>();
             myObjects.Add(newObject);
         }
     }

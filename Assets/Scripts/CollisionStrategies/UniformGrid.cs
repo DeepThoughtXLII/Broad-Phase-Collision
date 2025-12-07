@@ -34,23 +34,33 @@ public class UniformGrid : CollisionStrategy
         checkedCollisionpairs.Clear();
         CollisionChecksThisFrame = 0;
 
-        //if static grid doesn't exist yet, generate static grid
-        if (myStaticGrid == null)
-        {
-            lineGridSize = gridSize * 3;
-            myStaticGrid = new MyGrid<List<Line>>(GridType.RECTANGULAR, lineGridSize);
-            AddBordersIntoGrid(borders);
-        }
+        ////if static grid doesn't exist yet, generate static grid
+        //if (myStaticGrid == null)
+        //{
+        //    lineGridSize = gridSize * 3;
+        //    myStaticGrid = new MyGrid<List<Line>>(GridType.RECTANGULAR, lineGridSize);
+        //    AddBordersIntoGrid(borders);
+        //}
 
         FillDynamicGrid(objects);
 
+        CheckBallBorderCollisions(objects, borders);
         ComputeCollisionsPerCell();
 
-        CollisionChecksThisFrame = checkedCollisionpairs.Count + checkedCollisions.Count;
+        CollisionChecksThisFrame = checkedCollisionpairs.Count; // + checkedCollisions.Count;
 
         //Debug.Log("collisions checked: " + checkedCollisions.Count); 
 
        // Debug.Log("dictionairy count: " + myGrid.GetGrid().Count);
+    }
+
+    private void CheckBallBorderCollisions(List<CollisionObject> objects, List<Line> borders)
+    {
+        for (int i = 0; i < objects.Count; ++i)
+        {
+            base.borderCollision(borders, objects[i]);
+            //CollisionChecksThisFrame += borders.Count;
+        }
     }
 
     private void FillDynamicGrid(List<CollisionObject> objects)
@@ -220,24 +230,25 @@ public class UniformGrid : CollisionStrategy
         collisionQueue.Clear();
         foreach (KeyValuePair<Vector2Int, List<CollisionObject>> keyValuePair in myGrid.GetGrid())
         {
-            Vector3 cellWorldPosition = myGrid.GetWorldPosition(keyValuePair.Key);
-            bool hasStaticObjects = myStaticGrid.Contains(myStaticGrid.GetXY(cellWorldPosition));
-            if (hasStaticObjects) //static grid collisions
-            {
-                foreach (CollisionObject obj in keyValuePair.Value)
-                {
-                    foreach (Line line in myStaticGrid.GetValue(myStaticGrid.GetXY(cellWorldPosition)))
-                    {
-                        KeyValuePair<Line, CollisionObject> collisionInstance = new KeyValuePair<Line, CollisionObject>(line, obj);
-                        if (!checkedCollisions.ContainsKey(collisionInstance))
-                        {
-                            checkedCollisions.Add(new KeyValuePair<Line, CollisionObject>(line, obj), true);
-                            CircleLineCollision(line, obj);
-                            CollisionChecksThisFrame++;
-                        }
-                    }
-                }
-            }// dynamic grid collisions
+            //Vector3 cellWorldPosition = myGrid.GetWorldPosition(keyValuePair.Key);
+            //bool hasStaticObjects = myStaticGrid.Contains(myStaticGrid.GetXY(cellWorldPosition));
+            //if (hasStaticObjects) //static grid collisions
+            //{
+            //    foreach (CollisionObject obj in keyValuePair.Value)
+            //    {
+            //        foreach (Line line in myStaticGrid.GetValue(myStaticGrid.GetXY(cellWorldPosition)))
+            //        {
+            //            KeyValuePair<Line, CollisionObject> collisionInstance = new KeyValuePair<Line, CollisionObject>(line, obj);
+            //            if (!checkedCollisions.ContainsKey(collisionInstance))
+            //            {
+            //                checkedCollisions.Add(new KeyValuePair<Line, CollisionObject>(line, obj), true);
+            //                CircleLineCollision(line, obj);
+            //                CollisionChecksThisFrame++;
+            //            }
+            //        }
+            //    }
+            //}
+            // dynamic grid collisions
             if (keyValuePair.Value.Count > 1)
             {
                 CheckCollisionsInCell(keyValuePair.Value);
