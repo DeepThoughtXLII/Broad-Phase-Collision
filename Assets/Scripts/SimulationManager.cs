@@ -68,7 +68,7 @@ public class SimulationManager : MonoBehaviour
         cam.orthographicSize = Mathf.Sqrt(objAmount / 4f);
 
         //start simulation
-        OnSimulationStart?.Invoke(new SimData(objAmount, simulationTime, objSpawner));
+        OnSimulationStart?.Invoke(new SimData(objAmount, seed, simulationTime, objSpawner));
         simSelectUI.SetActive(false);
         StartCoroutine(SimulationTimer(simulationTime));
     }
@@ -102,10 +102,12 @@ public struct SimData
 {
     public int objAmount;
     public int simulationDuration;
+    public int rndSeed;
     public SpawnObjects simulation;
 
-    public SimData(int objAmount, int simulationDuration, SpawnObjects simulation)
+    public SimData(int objAmount, int rndSeed, int simulationDuration, SpawnObjects simulation)
     {
+        this.rndSeed = rndSeed;
         this.objAmount = objAmount;
         this.simulationDuration = simulationDuration;
         this.simulation = simulation;
@@ -113,6 +115,6 @@ public struct SimData
 
     public override string ToString()
     {
-        return $"objects in simulation: {objAmount} for {simulationDuration} seconds";
+        return $"objects in simulation: {objAmount} for {simulationDuration} seconds with seed {rndSeed}";
     }
 }

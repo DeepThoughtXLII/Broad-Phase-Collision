@@ -872,7 +872,7 @@ MonoBehaviour:
   Frame: 1
   myCollisionStrategy: {fileID: 11400000, guid: 18e7866b38b7b794a807cf87726b12fb, type: 2}
   collisionCheckAmounts: 
-  sizeRange: {x: 0.2, y: 1}
+  sizeRange: {x: 0.2, y: 0.2}
   manualObject: {fileID: 0}
   simulationRunning: 0
   showBorderGizmos: 0

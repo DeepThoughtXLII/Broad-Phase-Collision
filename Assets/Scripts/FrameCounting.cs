@@ -11,6 +11,8 @@ public class FrameCounting : MonoBehaviour
     bool isCounting = false;
     SimData simData;
 
+    private float rndNumber;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +38,7 @@ public class FrameCounting : MonoBehaviour
     {
         isCounting = true;
         this.simData = simData;
+        rndNumber = SimulationManager.Instance.GetRandom(0f, 10f);
     }
 
     private void EndCounting()
@@ -58,6 +61,7 @@ public class FrameCounting : MonoBehaviour
         using (StreamWriter writer = new StreamWriter(filepath))
         {
             writer.WriteLine(simData.ToString());
+            writer.WriteLine("random confirmation: " + rndNumber.ToString());
             writer.WriteLine("FPS: " + (frameTime.Count/simData.simulationDuration));
             List<int> checks = simData.simulation.collisionCheckAmounts;
             for (int i = 0; i < frameTime.Count; i++)

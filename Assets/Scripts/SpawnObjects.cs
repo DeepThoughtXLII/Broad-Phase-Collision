@@ -27,7 +27,6 @@ public class SpawnObjects : MonoBehaviour
 
     [SerializeField] private bool showBorderGizmos = false;
 
-
     private void Start()
     {
         simulationRunning = false;
